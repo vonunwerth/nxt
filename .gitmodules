@@ -1,0 +1,3 @@
+[submodule "nxt/src/nxt_python/src"]
+	path = nxt/src/nxt_python/src
+	url = https://github.com/Eelviny/nxt-python.git

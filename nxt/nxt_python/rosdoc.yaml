@@ -1,5 +1,0 @@
- - builder: rosmake
- - builder: epydoc
-   name: Python API
-   output_dir: python
-   config: epydoc.config

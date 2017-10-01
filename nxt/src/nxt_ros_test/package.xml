@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package>
+  <name>nxt_ros_test</name>
+  <version>0.0.0</version>
+  <description>The nxt_ros_test package</description>
+
+  <maintainer email="thomas@todo.todo">thomas</maintainer>
+
+  <license>TODO</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>nxt_ros</build_depend>
+  <build_depend>rospy</build_depend>
+
+  <run_depend>nxt_ros</run_depend>
+  <run_depend>rospy</run_depend>
+</package>
