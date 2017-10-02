@@ -31,7 +31,7 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-import roslib; roslib.load_manifest('nxt_controllers')  
+import roslib; roslib.load_manifest('nxt_controllers')
 import rospy
 import math
 import thread
@@ -47,14 +47,14 @@ class JointPositionController:
 
         # get joint name
         self.name = rospy.get_param('name', 'motor_1')
-        
+
         # joint interaction
         self.pub = rospy.Publisher('joint_command', JointCommand)
         rospy.Subscriber('joint_states', JointState, self.jnt_state_cb)
 
         # desired joint position
         rospy.Subscriber('joint_position', JointCommand, self.jnt_pos_cb)
-        
+
 
 
     def jnt_pos_cb(self, msg):

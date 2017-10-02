@@ -32,7 +32,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 
-import roslib; roslib.load_manifest('nxt_ros')  
+import roslib; roslib.load_manifest('nxt_ros')
 import rospy
 import math
 from sensor_msgs.msg import JointState
@@ -43,7 +43,7 @@ class JS:
         self.name = name
         self.header = header
         self.position = position
-        self.velocity = velocity 
+        self.velocity = velocity
         self.effort = effort
 
 
@@ -55,7 +55,7 @@ class JSAggregator:
         self.pub = rospy.Publisher('joint_states', JointState)
         self.observed_states = {}
         self.updates_since_publish = 0
-        
+
     def callback(self, data):
         num_joints = len(data.name)
         if len(data.position) < num_joints:
@@ -69,32 +69,32 @@ class JSAggregator:
             return
 
         for i in xrange(0, num_joints):
-            self.observed_states[data.name[i]] = JS(data.name[i], 
-                                                    data.header, 
-                                                    data.position[i], 
-                                                    data.velocity[i], 
+            self.observed_states[data.name[i]] = JS(data.name[i],
+                                                    data.header,
+                                                    data.position[i],
+                                                    data.velocity[i],
                                                     data.effort[i])
-            
+
         todelete = [k for k, v in self.observed_states.iteritems() if  data.header.stamp - v.header.stamp > rospy.Duration().from_sec(10.0) ] #hack parametersize
         for td in todelete:
             del self.observed_states[td]
 
 
-        # Only publish if there has been as many updates as there are joints, otherwise odom, gets zero deltas and the robot jerks around. 
+        # Only publish if there has been as many updates as there are joints, otherwise odom, gets zero deltas and the robot jerks around.
         if self.updates_since_publish < len(self.observed_states.keys()):
             self.updates_since_publish += 1
             return
 
         self.updates_since_publish = 0
         msg_out = JointState()
-        msg_out.header = data.header        
+        msg_out.header = data.header
         for k, v in self.observed_states.iteritems():
             #print k, v
             msg_out.name.append(v.name)
             msg_out.position.append(v.position)
             msg_out.velocity.append(v.velocity)
             msg_out.effort.append(v.effort)
-            
+
         self.pub.publish(msg_out)
 
 def main():

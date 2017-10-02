@@ -33,15 +33,15 @@
 
 
 
-import roslib; roslib.load_manifest('nxt_ros')  
+import roslib; roslib.load_manifest('nxt_ros')
 import nxt.locator
 import rospy
 import math
 from nxt.motor import PORT_A, PORT_B, PORT_C
 from nxt.sensor import PORT_1, PORT_2, PORT_3, PORT_4
 from nxt.sensor import Type
-import nxt.sensor 
-import nxt.motor 
+import nxt.sensor
+import nxt.motor
 import thread
 from sensor_msgs.msg import JointState, Imu
 from std_msgs.msg import Bool
@@ -78,8 +78,8 @@ class Device:
             return False
         # compute frequency
         now = rospy.Time.now()
-        period = 0.9 * self.period + 0.1 * (now - self.last_run).to_sec() 
-        
+        period = 0.9 * self.period + 0.1 * (now - self.last_run).to_sec()
+
         # check period
         if period > self.desired_period * 1.2:
             rospy.logwarn("%s not reaching desired frequency: actual %f, desired %f"%(self.name, 1.0/period, 1.0/self.desired_period))
@@ -93,11 +93,11 @@ class Device:
         try:
           rospy.logdebug('Trigger %s with current frequency %f'%(self.name, 1.0/self.period))
           now = rospy.Time.now()
-          self.period = 0.9 * self.period + 0.1 * (now - self.last_run).to_sec() 
+          self.period = 0.9 * self.period + 0.1 * (now - self.last_run).to_sec()
           self.last_run = now
           self.trigger()
           rospy.logdebug('Trigger %s took %f mili-seconds'%(self.name, (rospy.Time.now() - now).to_sec()*1000))
-        except nxt.error.DirProtError: 
+        except nxt.error.DirProtError:
           rospy.logwarn("caught an exception nxt.error.DirProtError")
           pass
         except nxt.error.I2CError:
@@ -132,7 +132,7 @@ class Motor(Device):
         # create publisher
         self.pub = rospy.Publisher('joint_state', JointState)
         self.last_js = None
-        
+
         # create subscriber
         self.sub = rospy.Subscriber('joint_command', JointCommand, self.cmd_cb, None, 2)
 
@@ -195,7 +195,7 @@ class TouchSensor(Device):
 
         # create publisher
         self.pub = rospy.Publisher(params['name'], Contact)
-        
+
     def trigger(self):
         ct = Contact()
         ct.contact = self.touch.get_sample()
@@ -220,7 +220,7 @@ class UltraSonicSensor(Device):
 
         # Create publisher
         self.pub = rospy.Publisher(params['name'], Range)
-        
+
     def trigger(self):
         ds = Range()
         ds.header.frame_id = self.frame_id
@@ -235,7 +235,7 @@ class UltraSonicSensor(Device):
         ds.range_min = self.min_range
         ds.range_max = self.max_range
         self.pub.publish(ds)
- 
+
 
 class GyroSensor(Device):
     """
@@ -344,7 +344,7 @@ class ColorSensor(Device):
 
         # create publisher
         self.pub = rospy.Publisher(params['name'], Color)
-        
+
     def trigger(self):
         co = Color()
         co.header.frame_id = self.frame_id
@@ -410,7 +410,7 @@ class IntensitySensor(Device):
 
         # create publisher
         self.pub = rospy.Publisher(params['name'], Color)
-        
+
     def trigger(self):
         co = Color()
         co.header.frame_id = self.frame_id
@@ -446,7 +446,7 @@ class LightSensor(Device):
 
         # Create publisher
         self.pub = rospy.Publisher(params['name'], Light)
-        
+
     def trigger(self):
         co = Light()
         co.header.frame_id = self.frame_id
