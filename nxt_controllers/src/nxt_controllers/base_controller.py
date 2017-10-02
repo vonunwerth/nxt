@@ -59,7 +59,7 @@ class BaseController:
         self.k_trans = 0.055/self.vel_to_eff
 
         # joint interaction
-        self.pub = rospy.Publisher('joint_command', JointCommand)
+        self.pub = rospy.Publisher('joint_command', JointCommand, queue_size=10)
         rospy.Subscriber('joint_states', JointState, self.jnt_state_cb)
 
         # base commands

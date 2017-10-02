@@ -64,7 +64,7 @@ class BaseOdometry:
             self.br = tf.TransformBroadcaster()
 
         # publish results on topic
-        self.pub = rospy.Publisher('odom', Odometry)
+        self.pub = rospy.Publisher('odom', Odometry, queue_size=10)
 
         self.initialized = False
 

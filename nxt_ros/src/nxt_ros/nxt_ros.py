@@ -130,7 +130,7 @@ class Motor(Device):
             self.motor.reset_position(False)
 
         # create publisher
-        self.pub = rospy.Publisher('joint_state', JointState)
+        self.pub = rospy.Publisher('joint_state', JointState, queue_size=10)
         self.last_js = None
 
         # create subscriber
@@ -219,7 +219,7 @@ class UltraSonicSensor(Device):
         self.ultrasonic.command(mode)
 
         # Create publisher
-        self.pub = rospy.Publisher(params['name'], Range)
+        self.pub = rospy.Publisher(params['name'], Range, queue_size=10)
 
     def trigger(self):
         ds = Range()
@@ -268,10 +268,10 @@ class GyroSensor(Device):
         rospy.loginfo("Gyro calibrated with offset %f"%self.offset)
 
         # create publisher
-        self.pub = rospy.Publisher(params['name'], Gyro)
+        self.pub = rospy.Publisher(params['name'], Gyro, queue_size=10)
 
         # create publisher
-        self.pub2 = rospy.Publisher(params['name']+"_imu", Imu)
+        self.pub2 = rospy.Publisher(params['name']+"_imu", Imu, queue_size=10)
 
     def trigger(self):
         sample = self.gyro.get_sample()
