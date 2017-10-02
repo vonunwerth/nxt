@@ -14,3 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
 find_package(orocos_kdl REQUIRED)
 
 catkin_python_setup()
+
+catkin_package(
+  CATKIN_DEPENDS nav_msgs nxt_msgs rospy sensor_msgs tf tf_conversions
+)

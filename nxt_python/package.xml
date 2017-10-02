@@ -14,8 +14,6 @@
 
   <maintainer email="thomas@todo.todo">Thomas Poulet</maintainer>
 
-  <review status="3rdparty" notes=""/>
-
   <license>BSD</license>
 
   <buildtool_depend>catkin</buildtool_depend>
