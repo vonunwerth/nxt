@@ -11,7 +11,7 @@ Software stack containing all the required pieces to use Lego Mindstorms NXT wit
 
 ## Installation
 
-### ROS package
+### ROS package
 
 The repository is expected to be used as the source folder of a working catkin environnement.
 
