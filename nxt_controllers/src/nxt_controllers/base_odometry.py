@@ -35,7 +35,8 @@ import roslib; roslib.load_manifest('nxt_controllers')
 import rospy
 import math
 import thread
-import tf
+import tf2_ros
+import geometry_msgs.msg
 from PyKDL import *
 from sensor_msgs.msg import JointState
 from nav_msgs.msg import Odometry
@@ -61,7 +62,7 @@ class BaseOdometry:
 
         # tf broadcaster
         if PUBLISH_TF:
-            self.br = tf.TransformBroadcaster()
+            self.br = tf2_ros.TransformBroadcaster()
 
         # publish results on topic
         self.pub = rospy.Publisher('odom', Odometry, queue_size=10)
@@ -89,8 +90,22 @@ class BaseOdometry:
             self.r_pos = position[self.r_joint]
             self.l_pos = position[self.l_joint]
             self.pose = addDelta(self.pose, self.pose.M * twist)
+
             if PUBLISH_TF:
-                self.br.sendTransform(self.pose.p, self.pose.M.GetQuaternion(), rospy.Time.now(), 'base_link', 'odom')
+                # Create transform message
+                t = geometry_msgs.msg.TransformStamped()
+                t.header.stamp = rospy.Time.now()
+                t.header.frame_id = "base_link"
+                t.child_frame_id = "odom"
+                t.transform.translation.x = self.pose.p.x()
+                t.transform.translation.y = self.pose.p.y()
+                t.transform.translation.z = self.pose.p.z()
+                t.transform.rotation.x = self.pose.M.GetQuaternion()[0]
+                t.transform.rotation.y = self.pose.M.GetQuaternion()[1]
+                t.transform.rotation.z = self.pose.M.GetQuaternion()[2]
+                t.transform.rotation.w = self.pose.M.GetQuaternion()[3]
+
+                self.br.sendTransform(t)
 
 
             self.rot_covar = 1.0
