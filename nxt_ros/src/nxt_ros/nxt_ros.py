@@ -136,6 +136,8 @@ class Motor(Device):
         # create subscriber
         self.sub = rospy.Subscriber('joint_command', JointCommand, self.cmd_cb, None, 2)
 
+        # Register the shutdown method
+        rospy.on_shutdown(self.shutdown)
 
     def cmd_cb(self, msg):
         if msg.name == self.name:
@@ -185,6 +187,10 @@ class Motor(Device):
         # send command
         self.motor.run(int(self.cmd), 0)
 
+    def shutdown(self):
+        ''' Used to relese the NXT nicely, kill motor, etc ... '''
+        print("Killing the motor " + self.name)
+        self.motor.run(0, 0)
 
 class TouchSensor(Device):
     def __init__(self, params, comm):
