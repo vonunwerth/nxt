@@ -31,31 +31,31 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-import roslib; roslib.load_manifest('nxt_controllers')
+import roslib
 import rospy
-import math
-import thread
 import tf2_ros
 import geometry_msgs.msg
 from PyKDL import *
 from sensor_msgs.msg import JointState
 from nav_msgs.msg import Odometry
-from nxt_msgs.msg import Range, JointCommand
 from tf_conversions import posemath
+roslib.load_manifest('nxt_controllers')
+
 
 PUBLISH_TF = False
+
 
 class BaseOdometry:
     def __init__(self):
         self.initialized = False
 
-        self.ns =rospy.get_namespace() + 'base_parameters/'
+        self.ns = rospy.get_namespace() + 'base_parameters/'
         # get joint name
-        self.l_joint = rospy.get_param(self.ns +'l_wheel_joint')
-        self.r_joint = rospy.get_param(self.ns +'r_wheel_joint')
+        self.l_joint = rospy.get_param(self.ns + 'l_wheel_joint')
+        self.r_joint = rospy.get_param(self.ns + 'r_wheel_joint')
 
-        self.wheel_radius = rospy.get_param(self.ns +'wheel_radius', 0.022)
-        self.wheel_basis = rospy.get_param(self.ns +'wheel_basis', 0.055)
+        self.wheel_radius = rospy.get_param(self.ns + 'wheel_radius', 0.022)
+        self.wheel_basis = rospy.get_param(self.ns + 'wheel_basis', 0.055)
 
         # joint interaction
         rospy.Subscriber('joint_states', JointState, self.jnt_state_cb)
@@ -84,9 +84,9 @@ class BaseOdometry:
         else:
             delta_r_pos = position[self.r_joint] - self.r_pos
             delta_l_pos = position[self.l_joint] - self.l_pos
-            delta_trans = (delta_r_pos + delta_l_pos)*self.wheel_radius/2.0
-            delta_rot   = (delta_r_pos - delta_l_pos)*self.wheel_radius/(2.0*self.wheel_basis)
-            twist = Twist(Vector(delta_trans, 0, 0),  Vector(0, 0, delta_rot))
+            delta_trans = (delta_r_pos + delta_l_pos) * self.wheel_radius / 2.0
+            delta_rot = (delta_r_pos - delta_l_pos) * self.wheel_radius / (2.0 * self.wheel_basis)
+            twist = Twist(Vector(delta_trans, 0, 0), Vector(0, 0, delta_rot))
             self.r_pos = position[self.r_joint]
             self.l_pos = position[self.l_joint]
             self.pose = addDelta(self.pose, self.pose.M * twist)
@@ -107,7 +107,6 @@ class BaseOdometry:
 
                 self.br.sendTransform(t)
 
-
             self.rot_covar = 1.0
             if delta_rot == 0:
                 self.rot_covar = 0.00000000001
@@ -123,11 +122,11 @@ class BaseOdometry:
                                     0, 0, 0, 0, 0, self.rot_covar]
             self.pub.publish(odom)
 
+
 def main():
     rospy.init_node('nxt_base_odometry')
     base_odometry = BaseOdometry()
     rospy.spin()
-
 
 
 if __name__ == '__main__':

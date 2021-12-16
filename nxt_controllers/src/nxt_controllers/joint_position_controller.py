@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # Software License Agreement (BSD License)
 #
 # Copyright (c) 2010, Willow Garage, Inc.
@@ -31,13 +31,12 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-import roslib; roslib.load_manifest('nxt_controllers')
-import rospy
-import math
-import thread
-from sensor_msgs.msg import JointState
-from nxt_msgs.msg import Range, JointCommand
+import roslib;
 
+roslib.load_manifest('nxt_controllers')
+import rospy
+from sensor_msgs.msg import JointState
+from nxt_msgs.msg import JointCommand
 
 
 class JointPositionController:
@@ -55,12 +54,9 @@ class JointPositionController:
         # desired joint position
         rospy.Subscriber('joint_position', JointCommand, self.jnt_pos_cb)
 
-
-
     def jnt_pos_cb(self, msg):
         if msg.name == self.name:
             self.pos_desi = msg.effort
-
 
     def jnt_state_cb(self, msg):
         for name, pos, vel in zip(msg.name, msg.position, msg.velocity):
@@ -72,16 +68,14 @@ class JointPositionController:
                 cmd = JointCommand()
                 cmd.name = self.name
                 cmd.effort = 190.0 * (self.pos_desi - pos) - 4.0 * self.vel
-                print 'Joint at %f, going to %f, commanding joint %f'%(pos,self.pos_desi, cmd.effort)
+                print('Joint at %f, going to %f, commanding joint %f' % (pos, self.pos_desi, cmd.effort))
                 self.pub.publish(cmd)
-
 
 
 def main():
     rospy.init_node('jnt_pos_controller')
     jnt_pos_controller = JointPositionController()
     rospy.spin()
-
 
 
 if __name__ == '__main__':
