@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # Software License Agreement (BSD License)
 #
 # Copyright (c) 2010, Willow Garage, Inc.
@@ -49,10 +49,11 @@ class BaseController:
         self.vel_trans = 0
         self.vel_rot = 0
 
-        self.ns = rospy.get_namespace() + 'base_parameters/'
+        # self.ns = rospy.get_namespace() + 'base_parameters/'
+        self.ns = rospy.get_namespace()
         # get joint name
-        self.l_joint = rospy.get_param(self.ns + 'l_wheel_joint')
-        self.r_joint = rospy.get_param(self.ns + 'r_wheel_joint')
+        self.l_joint = rospy.get_param(self.ns + 'l_wheel_joint', 'l_wheel_joint')
+        self.r_joint = rospy.get_param(self.ns + 'r_wheel_joint', 'r_wheel_joint') # TODO default name? oder lieber gar keinen default wert
         self.wheel_radius = rospy.get_param(self.ns + 'wheel_radius', 0.022)
         self.wheel_basis = rospy.get_param(self.ns + 'wheel_basis', 0.055)
         self.vel_to_eff = rospy.get_param(self.ns + 'vel_to_eff', 0.5)
@@ -96,7 +97,7 @@ class BaseController:
         r_cmd.name = self.r_joint
         r_cmd.effort = self.vel_to_eff * (
                 vel_trans / self.wheel_radius + vel_rot * self.wheel_basis / self.wheel_radius)
-        self.pub.publish(r_cmd)
+        #self.pub.publish(r_cmd)
 
 
 def main():

@@ -1,8 +1,13 @@
 nxt_robot:
-#  - type: motor
-#    name: motor_joint
-#    port: PORT_A
-#    desired_frequency: 50.0
+  - type: motor
+    name: l_wheel_joint
+    port: 0
+    desired_frequency: 50.0
+    
+  - type: motor
+    name: r_wheel_joint
+    port: 1
+    desired_frequency: 50.0
 
   - type: touch
     frame_id: touch_sensor_frame

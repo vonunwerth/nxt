@@ -114,7 +114,7 @@ class Motor(Device):
         Device.__init__(self, params)
         # create motor
         self.name = params['name']
-        self.motor = nxt.motor.Motor(comm, eval(params['port']))
+        self.motor = nxt.motor.Motor(comm, nxt.motor.Port(params['port'])) # TODO ! motor mode sollte in config A heißen gucken wie man hier enum so einbaut
         self.cmd = 0  # the commanded power value
 
         # Use absolute position
@@ -204,7 +204,7 @@ class TouchSensor(Device):
         self.touch = nxt.sensor.generic.Touch(comm, nxt.sensor.Port(params['port']))
         self.frame_id = params['frame_id']
         # create publisher
-        self.pub = rospy.Publisher(params['name'], Contact, queue_size=2) # TODO value for qs?
+        self.pub = rospy.Publisher(params['name'], Contact, queue_size=10)
 
     def trigger(self):
         ct = Contact()
@@ -218,7 +218,7 @@ class UltraSonicSensor(Device):
     def __init__(self, params, comm):
         Device.__init__(self, params)
         # Create ultrasonic sensor
-        self.ultrasonic = nxt.sensor.generic.Ultrasonic(comm, eval(params['port'])) # TODO maxi überall eval wegmachen
+        self.ultrasonic = nxt.sensor.generic.Ultrasonic(comm, nxt.sensor.Port(params['port']))
         self.frame_id = params['frame_id']
         self.spread = params['spread_angle']
         self.min_range = params['min_range']
@@ -497,7 +497,7 @@ def main():
                 ls.set_illuminated(active=False)
             elif c['type'] == 'ultrasonic':
                 # If there's an ultrasonic sensor, turn it off
-                us = nxt.sensor.generic.Ultrasonic(b, eval(c['port']))
+                us = nxt.sensor.generic.Ultrasonic(b, nxt.sensor.Port(c['port']))
                 mode = nxt.sensor.generic.Ultrasonic.Commands.CONTINUOUS_MEASUREMENT
                 us.command(mode)
 
@@ -506,7 +506,7 @@ def main():
     config = rospy.get_param("~" + ns)
     components = []
     for c in config:
-        rospy.loginfo("Creating %s with name %s on %s", c['type'], c['name'], c['port'])
+        rospy.loginfo("Creating %s with name %s on port %s", c['type'], c['name'], c['port'])
         if c['type'] == 'motor':
             components.append(Motor(c, b))
         elif c['type'] == 'touch':
